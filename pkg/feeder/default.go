@@ -2,9 +2,10 @@ package feeder
 
 import (
 	"fmt"
-	"github.com/golobby/cast"
 	"reflect"
 	"unsafe"
+
+	"github.com/golobby/cast"
 )
 
 // Default is a feeder.
@@ -23,7 +24,7 @@ func (f Default) Feed(structure interface{}) error {
 		}
 	}
 
-	return nil
+	return fmt.Errorf("default: input is not a struct pointer: %v --> %T", structure, structure)
 }
 
 // fillStruct sets a reflected struct fields with the default value.

@@ -1,9 +1,10 @@
 package feeder_test
 
 import (
+	"testing"
+
 	"github.com/golobby/config/v3/pkg/feeder"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestDefault_Feed(t *testing.T) {
@@ -35,5 +36,31 @@ func TestDefault_Feed_With_Invalid_Struct_It_Should_Fail(t *testing.T) {
 	f := feeder.Default{}
 
 	err := f.Feed(&c)
+	assert.Error(t, err)
+}
+
+func TestDefault_Feed_With_Invalid_Inner_Struct_It_Should_Fail(t *testing.T) {
+	type HttpConf struct {
+		RequestTimeoutMs float64 `default:"string"`
+	}
+	type App struct {
+		Name string `env:"APP_NAME" default:"string"`
+		Http *HttpConf
+	}
+	c := App{
+		Http: &HttpConf{},
+	}
+
+	f := feeder.Default{}
+	err := f.Feed(&c)
+	assert.Error(t, err)
+
+}
+
+func TestDefault_Feed_With_Non_Struct_Type_Should_Fail(t *testing.T) {
+	c := 42
+	f := feeder.Default{}
+
+	err := f.Feed(c)
 	assert.Error(t, err)
 }
